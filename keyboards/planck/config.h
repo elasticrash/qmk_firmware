@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
-#define VENDOR_ID       0xFEED
-#define PRODUCT_ID      0x6060
+#define VENDOR_ID       0x6F6C
+#define PRODUCT_ID      0x706C
 #define MANUFACTURER    OLKB
 #define PRODUCT         Planck
 #define DESCRIPTION     A compact ortholinear keyboard
