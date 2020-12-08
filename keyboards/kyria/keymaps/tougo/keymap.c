@@ -31,17 +31,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |  mo3 |   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |  ' "   |
  * |------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | Ctrl |   Z  |   X  |   C  |   V  |   B  |LShift| Space|  | Space| bcksp|   N  |   M  | ,  < | . >  | /  ? |  sfen  |
+ * | Ctrl |   Z  |   X  |   C  |   V  |   B  |LShift| Space|  | Space|RShift|   N  |   M  | ,  < | . >  | /  ? |  sfen  |
  * `--------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                      | Alt  | Tab  | mo2  |LShift| Space|  | Space| bcksp| mo1  | lgui | del  |
+ *                      | Alt  | Tab  | mo2  |LShift| Space|  | Space|RShift| mo1  | lgui | bsp  |
  *                      |      |      |      |      |      |  |      |      |      |      |      |
  *                      `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
       KC_ESC,  KC_Q,   KC_W,   KC_E,    KC_R,    KC_T,                                          KC_Y,   KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
       MO(3),   KC_A,   KC_S,   KC_D,    KC_F,    KC_G,                                          KC_H,   KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LCTRL,KC_Z,   KC_X,   KC_C,    KC_V,    KC_B,  KC_LSFT, KC_SPACE, KC_SPACE, KC_BSPACE, KC_N,   KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_SFTENT,
-                               KC_LALT, KC_TAB,  MO(2), KC_LSFT, KC_SPACE, KC_SPACE, KC_BSPACE, MO(1),  KC_LGUI, KC_DEL
+      KC_LCTRL,KC_Z,   KC_X,   KC_C,    KC_V,    KC_B,  KC_LSFT, KC_SPACE, KC_SPACE, KC_RSFT, KC_N,   KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_SFTENT,
+                               KC_LALT, KC_TAB,  MO(2), KC_LSFT, KC_SPACE, KC_SPACE, KC_RSFT, MO(1),  KC_LGUI, KC_BSPACE
     ),
 /*
  * Lower Layer: Symbols
@@ -101,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                       KC_F6,   KC_F7,   KC_UP,   KC_F9,   KC_F10,  _______,
       _______, RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI, RGB_MOD,                                     _______, KC_LEFT, KC_DOWN, KC_RGHT,  KC_F12,  _______,
       _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD,_______, _______, _______, KC_DEL, _______, _______, KC_LCBR, KC_RCBR, _______, _______,
-                                 _______, _______, _______, _______, _______, _______, KC_DEL, _______, _______, _______
+                                 _______, _______, _______, _______, _______, _______, KC_DEL, _______, _______, KC_DEL
     ),
 // /*
 //  * Layer template
@@ -151,6 +151,13 @@ void oled_task_user(void) {
 
 #ifdef ENCODER_ENABLE
 void encoder_update_user(uint8_t index, bool clockwise) {
+    if(get_highest_layer(layer_state)==_ADJUST){
+        if (clockwise) {
+            tap_code16(C(KC_Y));
+        } else {
+            tap_code16(C(KC_Z));
+        }
+    } else {
     if (index == 0) {
         // Volume control
         if (clockwise) {
@@ -166,6 +173,7 @@ void encoder_update_user(uint8_t index, bool clockwise) {
         } else {
             tap_code(KC_PGUP);
         }
+    }
     }
 }
 #endif
