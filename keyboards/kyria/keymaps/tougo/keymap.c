@@ -153,6 +153,24 @@ static void render_el_logo(void) {
 void oled_task_user(void) {
     if (is_keyboard_master()) {
         render_el_logo();
+            // Host Keyboard Layer Status
+    oled_write_P(PSTR("Layer: "), false);
+        switch (get_highest_layer(layer_state)) {
+            case _QWERTY:
+                oled_write_P(PSTR("Default\n"), false);
+                break;
+            case _LOWER:
+                oled_write_P(PSTR("Symbols\n"), false);
+                break;
+            case _RAISE:
+                oled_write_P(PSTR("Numbers\n"), false);
+                break;
+            case _ADJUST:
+                oled_write_P(PSTR("Control\n"), false);
+                break;
+            default:
+                oled_write_P(PSTR("Undefined\n"), false);
+        }
     } else {
         render_el_logo();
     }
