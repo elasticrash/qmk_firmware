@@ -38,7 +38,7 @@ qmk compile -kb all -km <keymap_name>
 $ qmk config compile.keymap=default
 $ cd ~/qmk_firmware/keyboards/planck/rev6
 $ qmk compile
-Ψ Compiling keymap with make planck/rev6:default
+Ψ Compiling keymap with make $/rev6:default
 ...
 ```
 or with optional keymap argument
