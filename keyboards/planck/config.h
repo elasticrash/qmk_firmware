@@ -21,8 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "config_common.h"
 
 /* USB Device descriptor parameter */
+<<<<<<< HEAD
 #define VENDOR_ID       0x6F6C
 #define PRODUCT_ID      0x706C
+=======
+#define VENDOR_ID       0x03A8
+>>>>>>> origin/master
 #define MANUFACTURER    OLKB
 #define PRODUCT         Planck
 
