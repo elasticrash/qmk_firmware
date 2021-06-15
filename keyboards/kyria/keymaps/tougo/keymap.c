@@ -22,6 +22,8 @@
 #define LUNA_SIZE 96 // 96-byte arrays for the little dog
 #define LUNA_FRAMES 2
 #define LUNA_FRAME_DURATION 200 // Number of ms per frame
+#define FORMAT LALT(LSFT(KC_F))
+#define TSKMGR LCTL(LSFT(KC_ESC))
 
 uint32_t luna_anim_timer = 0;
 uint32_t luna_anim_sleep = 0;
@@ -56,10 +58,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                      `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
-      KC_ESC,  KC_Q,   KC_W,   KC_E,    KC_R,    KC_T,                                          KC_Y,   KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
-      MO(3),   KC_A,   KC_S,   KC_D,    KC_F,    KC_G,                                          KC_H,   KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-      KC_LCTRL,KC_Z,   KC_X,   KC_C,    KC_V,    KC_B,  KC_LSFT, KC_SPACE, KC_SPACE, KC_RSFT, KC_N,   KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_SFTENT,
-                               KC_LALT, KC_TAB,  MO(2), KC_LSFT, KC_SPACE, KC_SPACE, KC_RSFT, MO(1),  LGUI_T(KC_BSPACE), KC_BSPACE
+      KC_ESC,  KC_Q,   KC_W,   KC_E,    KC_R,    KC_T,                                        KC_Y,   KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
+      LT(3, KC_TAB),   KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                               KC_H,   KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+      KC_LCTRL,KC_Z,   KC_X,   KC_C,    KC_V,    KC_B,  KC_ENT, KC_LSFT, KC_SPACE, KC_BSPACE, KC_N,   KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_SFTENT,
+                               KC_LALT, KC_TAB,  MO(2), KC_ENT, KC_LSFT, KC_SPACE, KC_BSPACE, MO(1),  KC_LGUI, FORMAT
     ),
 /*
  * Lower Layer: Symbols
@@ -77,8 +79,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_LOWER] = LAYOUT(
       _______, KC_EXLM, KC_AT,   KC_HASH, KC_DLR, KC_PERC,                                      KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSLS,
-      _______, KC_LCBR, KC_RCBR,  KC_LPRN, KC_RPRN, KC_GRV,                                     KC_PLUS, KC_MINS, KC_EQL,  KC_UNDS, KC_PERC, KC_PLUS,
-      _______, KC_PIPE, KC_CIRC, KC_LBRC, KC_RBRC, KC_TILD, _______, _______, _______, _______, KC_AMPR, KC_EQL,  KC_COMM, KC_DOT,  KC_NUBS, KC_MINS,
+      _______, KC_LCBR, KC_RCBR,  KC_LPRN, KC_RPRN, KC_GRV,                                     KC_MINS, KC_MINS, KC_EQL,  KC_UNDS, KC_PERC, KC_TILD,
+      _______, KC_PIPE, KC_CIRC, KC_LBRC, KC_RBRC, KC_TILD, _______, _______, _______, _______, KC_PLUS, KC_EQL,  KC_COMM, KC_DOT,  KC_NUBS, KC_PIPE,
                                  _______, _______, _______, KC_SCLN, KC_EQL,  KC_EQL,  KC_SCLN, _______, _______, _______
     ),
 /*
@@ -116,10 +118,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_ADJUST] = LAYOUT(
-      _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                       KC_F6,   KC_F7,   KC_UP,   KC_F9,   KC_F10,  _______,
-      _______, RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI, RGB_MOD,                                     _______, KC_LEFT, KC_DOWN, KC_RGHT,  KC_F12,  _______,
-      _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD,_______, _______, _______, KC_DEL, _______, _______, KC_LCBR, KC_RCBR, _______, _______,
-                                 _______, _______, _______, _______, _______, _______, KC_DEL, _______, _______, KC_DEL
+      _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                                      KC_F6,   KC_F7,   KC_UP,   KC_F9,   KC_F10,  _______,
+      _______, RGB_TOG, RGB_SAI, RGB_HUI, RGB_VAI, RGB_MOD,                                    _______, KC_LEFT, KC_DOWN, KC_RGHT,  KC_F11,  _______,
+      _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, RGB_RMOD,_______, _______, _______, KC_DEL, _______, _______, KC_LCBR, KC_RCBR, KC_F12, _______,
+                                 _______, _______, _______, _______, _______, _______, KC_DEL, _______, TSKMGR, KC_DEL
     ),
 // /*
 //  * Layer template
@@ -344,6 +346,25 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 void oled_task_user(void) {
+    if (is_keyboard_master()) {
+    oled_write_P(PSTR("Layer: "), false);
+    switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            oled_write_P(PSTR("Default\n"), false);
+            break;
+        case _LOWER:
+            oled_write_P(PSTR("Lower\n"), false);
+            break;
+        case _RAISE:
+            oled_write_P(PSTR("Raise\n"), false);
+            break;
+        case _ADJUST:
+            oled_write_P(PSTR("Adjust\n"), false);
+            break;
+        default:
+            oled_write_P(PSTR("Undefined\n"), false);
+    }
+        }
         animate_luna();
 }
 #endif
